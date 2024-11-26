@@ -16,6 +16,7 @@ import { CreateItemDto } from './dto/create-item.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { Request as ExpressRequest } from 'express';
 import { RequestUser } from '../types/requestUser';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('items')
 export class ItemsController {
@@ -42,12 +43,44 @@ export class ItemsController {
 
   @Put(':id')
   @UseGuards(AuthGuard('jwt'))
+  @ApiResponse({
+    status: 200,
+    description: '変更が成功した場合',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '該当のitemが見つからなかった場合',
+    content: {
+      'application/json': {
+        example: {
+          message: 'Not Found',
+          statusCode: 404,
+        },
+      },
+    },
+  })
   async updateStatus(@Param('id', ParseUUIDPipe) id: string): Promise<Item> {
     return await this.itemsService.updateStatus(id);
   }
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @ApiResponse({
+    status: 200,
+    description: '削除が成功した場合',
+  })
+  @ApiResponse({
+    status: 404,
+    description: '該当のitemが見つからなかった場合',
+    content: {
+      'application/json': {
+        example: {
+          message: 'Not Found',
+          statusCode: 404,
+        },
+      },
+    },
+  })
   async delete(
     @Param('id', ParseUUIDPipe) id: string,
     @Request() req: ExpressRequest & { user: RequestUser },
