@@ -37,12 +37,16 @@ export class ItemsService {
   }
 
   async updateStatus(id: string): Promise<Item> {
-    return await this.prismaService.item.update({
-      data: {
-        status: 'SOLD_OUT',
-      },
-      where: { id },
-    });
+    try {
+      return await this.prismaService.item.update({
+        data: {
+          status: 'SOLD_OUT',
+        },
+        where: { id },
+      });
+    } catch {
+      throw new NotFoundException();
+    }
   }
 
   async delete(id: string, userId: string) {
