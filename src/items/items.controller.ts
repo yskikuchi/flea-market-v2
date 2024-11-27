@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Request,
+  UseFilters,
   UseGuards,
 } from '@nestjs/common';
 import { ItemsService } from './items.service';
@@ -17,6 +18,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request as ExpressRequest } from 'express';
 import { RequestUser } from '../types/requestUser';
 import { ApiResponse } from '@nestjs/swagger';
+import { HttpExceptionFilter } from 'src/common/filters/http_exception/http_exception.filter';
 
 @Controller('items')
 export class ItemsController {
@@ -65,6 +67,7 @@ export class ItemsController {
 
   @Delete(':id')
   @UseGuards(AuthGuard('jwt'))
+  @UseFilters(HttpExceptionFilter)
   @ApiResponse({
     status: 200,
     description: '削除が成功した場合',
